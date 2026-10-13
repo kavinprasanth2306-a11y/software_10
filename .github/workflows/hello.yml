@@ -1,0 +1,55 @@
+# A workflow is a recipe GitHub runs for you.
+# This file lives at .github/workflows/hello.yml.
+# GitHub finds it there and runs it when a trigger happens.
+
+name: Hello Actions
+
+# "on" is the trigger: when should this recipe run?
+# - push: every time someone pushes commits to the repo
+# - workflow_dispatch: a "Run workflow" button on the Actions tab
+on:
+  push:
+  workflow_dispatch:
+
+# A workflow is made of jobs. Each job runs on a fresh computer
+# (a "runner") that GitHub lends you for a few minutes.
+jobs:
+  say-hello:
+    # ubuntu-latest is a clean Linux machine in GitHub's cloud.
+    runs-on: ubuntu-latest
+
+    # A job is a list of steps, run from top to bottom.
+    steps:
+      # "uses" borrows a ready-made action. This one copies
+      # the repository onto the runner so later steps can see the files.
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      # "run" is a shell command, the same kind you would type yourself.
+      - name: Say hello
+        run: echo "Hello from GitHub Actions"
+
+      # ${{ }} is an expression. GitHub fills it in before the step runs.
+      - name: Show a few facts about this run
+        run: |
+          echo "Event:  ${{ github.event_name }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Who started it: ${{ github.actor }}"
+
+  # A second job. It runs on its own machine, at the same time as say-hello.
+  # If a test fails, this job turns red and the whole workflow is marked failed.
+  test-calculator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # unittest reads test_calculator.py and runs every method named test_*.
+      # -v prints each test name, so a failure is easy to point at in class.
+      - name: Run the calculator tests
+        run: python -m unittest -v
