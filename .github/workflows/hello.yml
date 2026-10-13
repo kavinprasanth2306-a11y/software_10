@@ -38,7 +38,7 @@ jobs:
 
   # A second job. It runs on its own machine, at the same time as say-hello.
   # If a test fails, this job turns red and the whole workflow is marked failed.
-  test-calculator:
+  test-lost-and-found:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
@@ -49,7 +49,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      # unittest reads test_calculator.py and runs every method named test_*.
-      # -v prints each test name, so a failure is easy to point at in class.
-      - name: Run the calculator tests
+      # unittest reads test_campus_lost_and_found.py and runs every test_* method.
+      - name: Run campus lost and found tests
         run: python -m unittest -v
+
