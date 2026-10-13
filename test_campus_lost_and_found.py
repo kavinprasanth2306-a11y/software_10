@@ -41,12 +41,12 @@ class CampusLostAndFoundTests(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].title, "Blue Backpack")
 
-    # Test Case 4: Claiming an item (Intentionally failing for demo)
+    # Test Case 4: Claiming an item
     def test_claim_item(self):
         item = self.service.report_found("Keys with Red Lanyard", "Keys", "Main Gate")
         claimed_item = self.service.claim_item(item.id)
-        # Expected to fail: status will be "claimed", not "pending"
-        self.assertEqual(claimed_item.status, "pending")
+        self.assertEqual(claimed_item.status, "claimed")
+
 
 
 
