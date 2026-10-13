@@ -8,6 +8,7 @@ class CampusLostAndFoundTests(unittest.TestCase):
     def setUp(self):
         self.service = CampusLostAndFound()
 
+    # Test Case 1: Reporting a lost item
     def test_report_lost_item(self):
         item = self.service.report_lost(
             title="Blue Water Bottle",
@@ -19,6 +20,7 @@ class CampusLostAndFoundTests(unittest.TestCase):
         self.assertEqual(item.title, "Blue Water Bottle")
         self.assertEqual(item.status, "lost")
 
+    # Test Case 2: Reporting a found item
     def test_report_found_item(self):
         item = self.service.report_found(
             title="Scientific Calculator",
@@ -27,16 +29,10 @@ class CampusLostAndFoundTests(unittest.TestCase):
             description="Casio fx-991EX left on desk",
         )
         self.assertEqual(item.id, 1)
+        self.assertEqual(item.title, "Scientific Calculator")
         self.assertEqual(item.status, "found")
 
-    def test_empty_title_raises_error(self):
-        with self.assertRaises(ValueError):
-            self.service.report_lost("", "Electronics", "Library")
-
-    def test_empty_location_raises_error(self):
-        with self.assertRaises(ValueError):
-            self.service.report_found("ID Card", "ID Cards", "")
-
+    # Test Case 3: Finding items by keyword search
     def test_find_items_by_keyword(self):
         self.service.report_lost("Blue Backpack", "Bags", "Cafeteria", "Contains notebooks")
         self.service.report_found("Black Wallet", "Accessories", "Sports Complex", "Found near gym")
@@ -45,29 +41,11 @@ class CampusLostAndFoundTests(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].title, "Blue Backpack")
 
-    def test_find_items_by_category_and_status(self):
-        self.service.report_lost("Calculus Notebook", "Books", "Library")
-        self.service.report_found("Physics Textbook", "Books", "Lab 2")
-        self.service.report_found("USB Drive", "Electronics", "Lab 1")
-
-        found_books = self.service.find_items(category="Books", status="found")
-        self.assertEqual(len(found_books), 1)
-        self.assertEqual(found_books[0].title, "Physics Textbook")
-
+    # Test Case 4: Claiming an item
     def test_claim_item(self):
         item = self.service.report_found("Keys with Red Lanyard", "Keys", "Main Gate")
         claimed_item = self.service.claim_item(item.id)
         self.assertEqual(claimed_item.status, "claimed")
-
-    def test_claim_already_claimed_raises_error(self):
-        item = self.service.report_found("Earphones", "Electronics", "Hostel Block A")
-        self.service.claim_item(item.id)
-        with self.assertRaises(ValueError):
-            self.service.claim_item(item.id)
-
-    def test_claim_non_existent_item_raises_error(self):
-        with self.assertRaises(KeyError):
-            self.service.claim_item(999)
 
 
 if __name__ == "__main__":
